@@ -15,6 +15,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Import your models and Base
+from app.core.config import settings
 from app.db.database import Base
 from app.models import document, user, ingestion  # Import all your models
 
@@ -52,6 +53,9 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
+    # Override sqlalchemy.url with the one from settings
+    configuration = config.get_section(config.config_ini_section)
+    configuration["sqlalchemy.url"] = settings.SQLALCHEMY_DATABASE_URI
     """Run migrations in 'online' mode.
 
     In this scenario we need to create an Engine
