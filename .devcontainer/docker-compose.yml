@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/app
+    command: sleep infinity
+    environment:
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=document_management
+      - SECRET_KEY=your-secret-key-for-jwt
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: postgres:13
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=document_management
+    networks:
+      - app-network
+
+networks:
+  app-network:
+  default:
+    internal: true
+  internet:
+    external: true
+
+volumes:
+  postgres_data: 
